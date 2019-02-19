@@ -4,8 +4,8 @@ services:
     build: .
     command: npm run start
     volumes:
-      - .:/usr/memoriz/
-      - /usr/memoriz/node_modules
+      - .:/usr/app/memoriz/
+      - /usr/app/memoriz/node_modules
     ports:
       - "3000:3000"
     depends_on:
