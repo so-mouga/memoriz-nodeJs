@@ -2,7 +2,7 @@ version: '2'
 services:
   web:
     build: .
-    command: npm run start
+    command: npm run dev
     volumes:
       - .:/usr/app/memoriz/
       - /usr/app/memoriz/node_modules
