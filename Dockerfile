@@ -5,6 +5,7 @@ WORKDIR /usr/app/memoriz
 COPY package.json .
 COPY package-lock.json .
 
+RUN npm install -g nodemon
 RUN npm install --quiet
 
 COPY . .
