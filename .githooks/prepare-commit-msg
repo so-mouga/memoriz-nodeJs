@@ -1,0 +1,11 @@
+#!/bin/bash
+# Regex commit-msg hook for git
+
+MSG_FILE=${1}
+MSG=$(head -n 1 ${MSG_FILE})
+COMMIT_MSG_REGEX="((chore|doc|feat|fix|perf|style|refacto|test)(\((.*)\)): (.*)|Merge(.*)|Revert(.*))"
+
+if [[ ! ${MSG} =~ $COMMIT_MSG_REGEX ]]; then
+    echo "Message ${MSG} does not match ${COMMIT_MSG_REGEX}"
+    exit 1
+fi
