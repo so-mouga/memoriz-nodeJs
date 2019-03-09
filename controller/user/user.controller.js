@@ -2,6 +2,7 @@ const express    = require('express');
 const router     = express.Router();
 const models     = require( '../../models');
 const HttpStatus = require('http-status-codes');
+const Token      = require('../../utils/token/token');
 
 /* GET users. */
 router.get('/', function(req, res) {
@@ -57,5 +58,9 @@ router.put('/:id', function(req, res) {
     }).catch((e) => res.status(HttpStatus.NOT_ACCEPTABLE).send(e.message))
   })
 });
+
+
+//PUT THE METHOD VERIFYTOKEN ON ALL ROUTES
+router.all('*', Token.verifyToken)
 
 module.exports = router;
