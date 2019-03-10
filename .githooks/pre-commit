@@ -2,12 +2,15 @@
 FILES=$(git diff --cached --name-only --diff-filter=ACM "*.js" "*.jsx" | sed 's| |\\ |g')
 [ -z "$FILES" ] && exit 0
 
-# Prettify all selected files
-echo "$FILES" | xargs ./node_modules/.bin/prettier --check --use-tabs --end-of-line crlf
+# Prettify all selected files and store the output
+CHECK=$(./node_modules/.bin/prettier --check --use-tabs --end-of-line crlf "$FILES")
 
+# Store exit code of prettier command
+RESULT=$?
 
-exit 1
-# Add back the modified/prettified files to staging
-echo "$FILES" | xargs git add
+# Display result of prettier command
+echo "$CHECK"
+
+[ "$RESULT" = "1" ] && exit 1
 
 exit 0
