@@ -8,7 +8,7 @@ CHECK=$(./node_modules/.bin/prettier --check --use-tabs --end-of-line crlf "$FIL
 # Store exit code of prettier command
 RESULT=$?
 
-# Display result of prettier command
+# Display output of prettier command
 echo "$CHECK"
 
 [ "$RESULT" = "1" ] && exit 1
