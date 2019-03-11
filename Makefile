@@ -69,12 +69,12 @@ init-hooks:
 	git config --local core.hooksPath .githooks
 ifneq ($(OSFLAG),WIN32)
 	chmod -R +x .githooks
-endif	
+endif
 
 ## to install app
 app-install:
-	docker-compose up -d --build
 	docker-compose exec web npm install
+	make app-create-database
 	make init-hooks
 
 ## to run app
@@ -85,13 +85,25 @@ infra-up:
 infra-stop:
 	docker-compose stop
 
+## to create the database if it does not exist
+app-create-database:
+    docker-compose exec web node_modules/.bin/sequelize db:create
+
 ## to open a sh session in the node container
 infra-shell-node:
 	$(docker_exec_web) sh
 
 ## to run sequelize migrations
 app-db-migrate:
-	$(docker_exec_web) node_modules/.bin/sequelize db:migrate
+	docker-compose exec web node_modules/.bin/sequelize db:migrate
+
+## to run down sequelize migrations
+app-db-unmigrate:
+	docker-compose exec web node_modules/.bin/sequelize db:migrate:undo
+
+## to show logs from containers, specify "c=service_name" to filter logs by container
+infra-show-logs:
+	docker-compose logs -ft ${c}
 
 ## to show files that need to be fixed
 app-cs-check: 
@@ -100,3 +112,4 @@ app-cs-check:
 ## to fix files that need to be fixed
 app-cs-fix: 
 	$(docker_exec_web) sh -c './node_modules/prettier/bin-prettier.js --write "**/*.js" --use-tabs --end-of-line crlf --ignore-path ./node_modules/**/*.* ./.githooks/ ./bin/ ./config/ ./docs/'
+
