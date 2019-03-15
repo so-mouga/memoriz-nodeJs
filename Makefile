@@ -107,9 +107,9 @@ infra-show-logs:
 
 ## to show files that need to be fixed
 app-cs-check: 
-	$(docker_exec_web) sh -c './node_modules/prettier/bin-prettier.js --check "**/*.js"'
+	$(docker_exec_web) npm run prettier:check
 
 ## to fix files that need to be fixed
 app-cs-fix: 
-	$(docker_exec_web) sh -c './node_modules/prettier/bin-prettier.js --write "**/*.js"'
+	$(docker_exec_web) npm run prettier:fix
 
