@@ -1,0 +1,16 @@
+#!/bin/sh
+FILES=$(git diff --cached --name-only --diff-filter=ACM "*.js" "*.jsx" | sed 's| |\\ |g')
+[ -z "$FILES" ] && exit 0
+
+# Prettify all selected files and store the output
+CHECK=$(./node_modules/.bin/prettier --check --use-tabs --end-of-line crlf "$FILES")
+
+# Store exit code of prettier command
+RESULT=$?
+
+# Display output of prettier command
+echo "$CHECK"
+
+[ "$RESULT" = "1" ] && exit 1
+
+exit 0

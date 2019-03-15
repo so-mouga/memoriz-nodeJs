@@ -43,6 +43,8 @@ else
 	endif
 endif
 
+docker_exec_web := docker-compose exec web
+
 ## Help
 help:
 	printf "${COLOR_COMMENT}Usage:${COLOR_RESET}\n"
@@ -89,7 +91,7 @@ app-create-database:
 
 ## to open a sh session in the node container
 infra-shell-node:
-	docker-compose exec web sh
+	$(docker_exec_web) sh
 
 ## to run sequelize migrations
 app-db-migrate:
@@ -102,3 +104,12 @@ app-db-unmigrate:
 ## to show logs from containers, specify "c=service_name" to filter logs by container
 infra-show-logs:
 	docker-compose logs -ft ${c}
+
+## to show files that need to be fixed
+app-cs-check: 
+	$(docker_exec_web) sh -c './node_modules/prettier/bin-prettier.js --check "**/*.js"'
+
+## to fix files that need to be fixed
+app-cs-fix: 
+	$(docker_exec_web) sh -c './node_modules/prettier/bin-prettier.js --write "**/*.js"'
+
