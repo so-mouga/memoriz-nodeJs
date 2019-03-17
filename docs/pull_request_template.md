@@ -6,16 +6,17 @@
 
 <!-- Mention the issue(s) this PR closes or is related to -->
 
+## Ticket trello
+
+<https://trello.com/your-ticket>
 
 ## Tasks
 
-- [x] Added ...
-- [ ] Unit tests
-- [ ] Functional tests
-- [ ] Documentation
-- [ ] Fixtures ?
-- [ ] Migrations ?
-...
+- [x] Yours tasks ...
+- [x] Yours changes ...
+- [x] Tests
+- [X] Documentations
+- [X] etc ...
 
 ## Screenshots
 

@@ -1,7 +1,7 @@
 {
   "arrowParens": "avoid",
-  "bracketSpacing": false,
-  "endOfLine": "crlf",
+  "bracketSpacing": true,
+  "endOfLine": "lf",
   "htmlWhitespaceSensitivity": "css",
   "jsxBracketSameLine": false,
   "printWidth": 80,
@@ -11,13 +11,5 @@
   "singleQuote": true,
   "tabWidth": 2,
   "trailingComma": "all",
-  "useTabs": true,
-  "overrides": [
-    {
-      "files": "*.json",
-      "options": {
-        "printWidth": 200
-      }
-    }
-  ]
+  "useTabs": false
 }
