@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const models = require('../../models');
+const models = require('../../db/models');
 const HttpStatus = require('http-status-codes');
 const Token = require('../../utils/token/token');
 
