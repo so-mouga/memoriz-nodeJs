@@ -79,7 +79,7 @@ app-install:
 
 ## to run app
 infra-up:
-	docker-compose up -d
+	docker-compose up --build -d
 
 ## to stop all the containers
 infra-stop:
@@ -91,7 +91,7 @@ infra-rebuild:
 
 ## to create the database if it does not exist
 app-create-database:
-    docker-compose exec web node_modules/.bin/sequelize db:create
+    $(docker_exec_web) node_modules/.bin/sequelize db:create
 
 ## to open a sh session in the node container
 infra-shell-node:
@@ -99,21 +99,24 @@ infra-shell-node:
 
 ## to run sequelize migrations
 app-db-migrate:
-	docker-compose exec web node_modules/.bin/sequelize db:migrate
+	$(docker_exec_web) node_modules/.bin/sequelize db:migrate
+
+## to generate a new file migration, specify "name=migration_name"
+app-db-generate-migration:
+	$(docker_exec_web) node_modules/.bin/sequelize  migration:create --name ${name}
 
 ## to run down sequelize migrations
 app-db-unmigrate:
-	docker-compose exec web node_modules/.bin/sequelize db:migrate:undo
+	$(docker_exec_web) node_modules/.bin/sequelize db:migrate:undo
 
 ## to show logs from containers, specify "c=service_name" to filter logs by container
 infra-show-logs:
 	docker-compose logs -ft ${c}
 
 ## to show files that need to be fixed
-app-cs-check: 
+app-cs-check:
 	$(docker_exec_web) npm run prettier:check
 
 ## to fix files that need to be fixed
-app-cs-fix: 
+app-cs-fix:
 	$(docker_exec_web) npm run prettier:fix
-
