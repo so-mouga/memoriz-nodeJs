@@ -2,16 +2,17 @@ const express    = require('express');
 const router     = express.Router();
 const models     = require( '../../models');
 const HttpStatus = require('http-status-codes');
+const Token      = require('../../utils/token/token');
 
 /* GET users. */
-router.get('/', function(req, res) {
+router.get('/', Token.verifyToken, function(req, res) {
   models.User.findAll().then(user => {
     return res.status(HttpStatus.OK).send(user)
   })
 });
 
 /* GET user by id. */
-router.get('/:id', function(req, res) {
+router.get('/:id', Token.verifyToken, function(req, res) {
   const userId = req.params.id;
   models.User.findOne({
     where: { id: userId }
@@ -33,7 +34,7 @@ router.post('/', function(req, res) {
 });
 
 /* PUT update user. */
-router.put('/:id', function(req, res) {
+router.put('/:id', Token.verifyToken, function(req, res) {
   const userId = req.params.id;
   models.User.findOne({
     where: { id: userId }

@@ -7,6 +7,7 @@ const app          = express();
 
 const indexRouter    = require('./routes/index');
 const userController = require('./controller/user/user.controller');
+const authController = require('./controller/auth/auth.controller');
 
 
 // view engine setup
@@ -29,6 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Routes
 app.use('/', indexRouter);
 app.use('/api/users', userController);
+app.use('/api/auth', authController);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

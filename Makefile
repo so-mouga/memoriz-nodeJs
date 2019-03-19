@@ -85,6 +85,10 @@ infra-up:
 infra-stop:
 	docker-compose stop
 
+## to stop all the containers
+infra-rebuild:
+	docker-compose up -d --build --force-recreat
+
 ## to create the database if it does not exist
 app-create-database:
     docker-compose exec web node_modules/.bin/sequelize db:create
