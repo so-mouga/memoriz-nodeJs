@@ -12,35 +12,25 @@ router.get('/login', function (req, res) {
     }
   }).then((user) => {
     if (!user) {
-      res.sendStatus(HttpStatus.NOT_FOUND);
-    } else if (user) {
-      // Check if password matches
-      if (user.password !== req.body.password) {
-        res.sendStatus(HttpStatus.LOCKED);
-      } else {
-        //if user is found and the password matched
-        //we will create a token
-        res.json({
-          success: true,
-          message: 'You have a token',
-          token: Token.createToken({user})
-        })
-      }
+      return res.sendStatus(HttpStatus.NOT_FOUND);
     }
+    //we will create a token
+    return res.status(HttpStatus.OK).json({
+      success: true,
+      message: 'Authentication successful!',
+      token: Token.createToken({user})
+    })
+
   });
 });
 
-router.get('/logout', function(req, res) {
-  if(req.session) {
-    //delete session object
-    res.session.destroy(function (err) {
-      if(err){
-        return res.sendStatus(HttpStatus.CONFLICT)
-      } else {
-        return res.redirect('/')
-      }
-    })
-  }
+router.get('/logout', Token.verifyToken, function(req, res) {
+  // jwt can't delete token
+  // https://medium.com/devgorilla/how-to-log-out-when-using-jwt-a8c7823e8a6
+  return res.status(HttpStatus.OK).json({
+    success: true,
+    message: 'token delete',
+  })
 });
 
 module.exports = router;

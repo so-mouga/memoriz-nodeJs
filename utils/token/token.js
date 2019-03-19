@@ -10,20 +10,38 @@ exports.createToken = (details) => {
     details = {}
   }
   if (details.user || typeof details.user == 'object') {
-    let token = jwt.sign(details.user, privateKey, {algorithm: 'RS256'})
+    const options = {
+      expiresIn:  "30d", // 30 days validity
+      algorithm:  "RS256"
+    };
 
-    return token
+    return jwt.sign({ data: details.user }, privateKey, options);
   }
-}
 
-exports.verifyToken = (token) => {
-  return new Promise(((resolve, reject) => {
-    jwt.verify(token, publicKey, function (err, decodedToken) {
-      if (err || !decodedToken) {
-        return reject(err)
-      }
-      resolve(decodedToken)
-    });
-  }))
+  return null;
+};
+
+exports.verifyToken = (req, res, next) => {
+  const token = getToken(req);
+  if (!token) {
+    return res.status(HttpStatus.BAD_REQUEST).json({status: false, message: "need token"});
+  }
+
+  jwt.verify(token, publicKey, function (err, decodedToken) {
+    if (err || !decodedToken) {
+      return res.status(HttpStatus.BAD_REQUEST).json({status: false, message: err.message});
+    }
+    req.user = decodedToken;
+    next();
+  });
+};
+
+
+function getToken(req) {
+  const token = req.headers['x-access-token'] || req.headers['authorization'];
+  if (!token || !token.startsWith('Bearer ')) {
+    return null;
+  }
+  return token.slice(7, token.length);
 }
 
