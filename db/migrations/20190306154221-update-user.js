@@ -5,22 +5,22 @@ module.exports = {
     return Promise.all([
       queryInterface.changeColumn('Users', 'userName', {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       }),
       queryInterface.changeColumn('Users', 'profilType', {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       }),
       queryInterface.changeColumn('Users', 'email', {
         type: Sequelize.STRING,
         unique: true,
-        allowNull: false
+        allowNull: false,
       }),
       queryInterface.changeColumn('Users', 'password', {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       }),
-      queryInterface.renameColumn('Users', 'profilType','profileType')
+      queryInterface.renameColumn('Users', 'profilType', 'profileType'),
     ]);
   },
 
@@ -28,22 +28,22 @@ module.exports = {
     return Promise.all([
       queryInterface.changeColumn('Users', 'userName', {
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: true,
       }),
       queryInterface.changeColumn('Users', 'profilType', {
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: true,
       }),
       queryInterface.changeColumn('Users', 'email', {
         type: Sequelize.STRING,
         unique: false,
-        allowNull: true
+        allowNull: true,
       }),
       queryInterface.changeColumn('Users', 'password', {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       }),
-      queryInterface.renameColumn('Users', 'profileType','profilType')
+      queryInterface.renameColumn('Users', 'profileType', 'profilType'),
     ]);
-  }
+  },
 };
