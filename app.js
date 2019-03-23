@@ -1,12 +1,12 @@
-const createError  = require('http-errors');
-const express      = require('express');
-const path         = require('path');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
 const cookieParser = require('cookie-parser');
-const logger       = require('morgan');
-const app          = express();
-const cors         = require('cors');
+const logger = require('morgan');
+const app = express();
+const cors = require('cors');
 
-const indexRouter    = require('./routes/index');
+const indexRouter = require('./routes/index');
 const userController = require('./controller/user/user.controller');
 const authController = require('./controller/auth/auth.controller');
 

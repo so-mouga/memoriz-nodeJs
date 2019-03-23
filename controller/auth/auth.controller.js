@@ -4,13 +4,13 @@ const models = require('../../db/models');
 const HttpStatus = require('http-status-codes');
 const Token = require('../../utils/token/token');
 
-router.post('/login', function (req, res) {
+router.post('/login', function(req, res) {
   models.User.findOne({
     where: {
       email: req.body.email,
-      password: req.body.password
-    }
-  }).then((user) => {
+      password: req.body.password,
+    },
+  }).then(user => {
     if (!user) {
       return res.sendStatus(HttpStatus.NOT_FOUND);
     }
@@ -18,9 +18,8 @@ router.post('/login', function (req, res) {
     return res.status(HttpStatus.OK).json({
       success: true,
       message: 'Authentication successful!',
-      token: Token.createToken({user})
-    })
-
+      token: Token.createToken({ user }),
+    });
   });
 });
 
