@@ -4,7 +4,7 @@ const models = require('../../db/models');
 const HttpStatus = require('http-status-codes');
 const Token = require('../../utils/token/token');
 
-router.get('/login', function (req, res) {
+router.post('/login', function (req, res) {
   models.User.findOne({
     where: {
       email: req.body.email,
@@ -22,15 +22,6 @@ router.get('/login', function (req, res) {
     })
 
   });
-});
-
-router.get('/logout', Token.verifyToken, function(req, res) {
-  // jwt can't delete token
-  // https://medium.com/devgorilla/how-to-log-out-when-using-jwt-a8c7823e8a6
-  return res.status(HttpStatus.OK).json({
-    success: true,
-    message: 'token delete',
-  })
 });
 
 module.exports = router;
