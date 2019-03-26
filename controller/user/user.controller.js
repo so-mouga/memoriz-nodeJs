@@ -18,9 +18,7 @@ router.get('/:id', Token.verifyToken, function(req, res) {
     where: { id: userId },
   }).then(user => {
     if (!user) {
-      return res
-        .status(HttpStatus.NOT_FOUND)
-        .send(`user not found - id : ${userId}`);
+      return res.status(HttpStatus.NOT_FOUND).send(`user not found - id : ${userId}`);
     }
     return res.status(HttpStatus.OK).send(user.dataValues);
   });
@@ -44,9 +42,7 @@ router.put('/:id', Token.verifyToken, function(req, res) {
     where: { id: userId },
   }).then(user => {
     if (!user) {
-      return res
-        .status(HttpStatus.NOT_FOUND)
-        .send(`user not found - id : ${userId}`);
+      return res.status(HttpStatus.NOT_FOUND).send(`user not found - id : ${userId}`);
     }
     models.User.update(
       {
