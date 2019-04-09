@@ -3,6 +3,7 @@ const router = express.Router();
 const models = require('../../db/models');
 const HttpStatus = require('http-status-codes');
 const Token = require('../../utils/token/token');
+const Password = require('../../utils/password/password');
 
 /* GET users. */
 router.get('/', Token.verifyToken, function(req, res) {
@@ -26,6 +27,7 @@ router.get('/:id', Token.verifyToken, function(req, res) {
 
 /* POST create user. */
 router.post('/', function(req, res) {
+  req.body.password = Password.generateHash(req.body.password);
   models.User.create(req.body)
     .then(user => {
       return res.status(HttpStatus.CREATED).send(user);
