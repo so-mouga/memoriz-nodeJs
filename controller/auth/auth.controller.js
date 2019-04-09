@@ -3,15 +3,15 @@ const router = express.Router();
 const models = require('../../db/models');
 const HttpStatus = require('http-status-codes');
 const Token = require('../../utils/token/token');
+const Password = require('../../utils/password/password');
 
 router.post('/login', function(req, res) {
   models.User.findOne({
     where: {
       email: req.body.email,
-      password: req.body.password,
     },
   }).then(user => {
-    if (!user) {
+    if (!user || !Password.comparePassword(req.body.password, user.password)) {
       return res.sendStatus(HttpStatus.NOT_FOUND);
     }
     //we will create a token
