@@ -7,7 +7,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       }),
-      queryInterface.changeColumn('Users', 'profilType', {
+      queryInterface.changeColumn('Users', 'profileType', {
         type: Sequelize.STRING,
         allowNull: false,
       }),
@@ -30,7 +30,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       }),
-      queryInterface.changeColumn('Users', 'profilType', {
+      queryInterface.changeColumn('Users', 'profileType', {
         type: Sequelize.STRING,
         allowNull: true,
       }),

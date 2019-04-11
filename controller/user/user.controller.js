@@ -7,7 +7,7 @@ const Password = require('../../utils/password/password');
 
 /* GET users. */
 router.get('/', Token.verifyToken, function(req, res) {
-  models.User.findAll().then(user => {
+  models.User.findAll({ attributes: { exclude: ['password'] } }).then(user => {
     return res.status(HttpStatus.OK).send(user);
   });
 });
@@ -16,6 +16,7 @@ router.get('/', Token.verifyToken, function(req, res) {
 router.get('/:id', Token.verifyToken, function(req, res) {
   const userId = req.params.id;
   models.User.findOne({
+    attributes: { exclude: ['password'] },
     where: { id: userId },
   }).then(user => {
     if (!user) {
@@ -46,18 +47,10 @@ router.put('/:id', Token.verifyToken, function(req, res) {
     if (!user) {
       return res.status(HttpStatus.NOT_FOUND).send(`user not found - id : ${userId}`);
     }
-    models.User.update(
-      {
-        userName: req.body.userName,
-        profileType: req.body.profileType,
-        email: req.body.email,
-        password: req.body.password,
-      },
-      {
-        returning: true,
-        where: { id: userId },
-      },
-    )
+    models.User.update(req.body, {
+      returning: true,
+      where: { id: userId },
+    })
       .then(function([rowsUpdate, [user]]) {
         return res.status(HttpStatus.OK).send(user);
       })
