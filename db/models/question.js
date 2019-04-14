@@ -17,7 +17,17 @@ module.exports = (sequelize, DataTypes) => {
           this.setDataValue('incorrectAnswers', val.join(';'));
         },
       },
-      correctAnswers: DataTypes.STRING,
+      correctAnswers: {
+        type: DataTypes.STRING,
+        get() {
+          if (undefined !== this.getDataValue('correctAnswers')) {
+            return this.getDataValue('correctAnswers').split(';');
+          }
+        },
+        set(val) {
+          this.setDataValue('correctAnswers', val.join(';'));
+        },
+      },
       media: DataTypes.STRING,
       resource: DataTypes.STRING,
       resourceMedia: DataTypes.STRING,
