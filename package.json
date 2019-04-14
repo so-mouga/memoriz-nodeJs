@@ -9,7 +9,7 @@
     "prettier:check": "./node_modules/prettier/bin-prettier.js --check \"**/*.js\""
   },
   "dependencies": {
-    "bcrypt": "^3.0.5",
+    "bcrypt": "^3.0.6",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
@@ -21,11 +21,11 @@
     "morgan": "~1.9.0",
     "mysql2": "^1.6.5",
     "pg": "^7.9.0",
-    "sequelize": "^4.43.0",
+    "sequelize": "^4.43.1",
     "sequelize-cli": "^5.4.0",
     "twig": "~0.10.3"
   },
   "devDependencies": {
-    "prettier": "^1.16.4"
+    "prettier": "^1.17.0"
   }
 }

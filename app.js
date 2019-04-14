@@ -10,6 +10,7 @@ const indexRouter = require('./routes/index');
 const userController = require('./controller/user/user.controller');
 const authController = require('./controller/auth/auth.controller');
 const questionController = require('./controller/question/question.controller');
+const tagController = require('./controller/tag/tag.controller');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -28,6 +29,7 @@ app.use('/', indexRouter);
 app.use('/api/users', userController);
 app.use('/api/auth', authController);
 app.use('/api/questions', questionController);
+app.use('/api/tags', tagController);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
