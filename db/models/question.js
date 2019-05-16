@@ -44,6 +44,11 @@ module.exports = (sequelize, DataTypes) => {
       as: 'tags',
       foreignKey: 'questionId',
     });
+    Question.belongsToMany(models.Game, {
+      through: 'GameQuestion',
+      as: 'games',
+      foreignKey: 'questionId',
+    });
   };
   return Question;
 };
