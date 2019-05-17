@@ -1,0 +1,43 @@
+'use strict';
+module.exports = {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.createTable('Games', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
+      },
+      cover: {
+        type: Sequelize.STRING,
+      },
+      name: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
+      description: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
+      userId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+      },
+      isPrivate: {
+        defaultValue: false,
+        type: Sequelize.BOOLEAN,
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+    });
+  },
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.dropTable('Games');
+  },
+};

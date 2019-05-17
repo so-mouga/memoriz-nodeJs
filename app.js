@@ -7,10 +7,11 @@ const app = express();
 const cors = require('cors');
 
 const indexRouter = require('./routes/index');
-const userController = require('./controller/user/user.controller');
-const authController = require('./controller/auth/auth.controller');
-const questionController = require('./controller/question/question.controller');
-const tagController = require('./controller/tag/tag.controller');
+const userController = require('./controller/api/user.controller');
+const authController = require('./controller/api/auth.controller');
+const questionController = require('./controller/api/question.controller');
+const tagController = require('./controller/api/tag.controller');
+const gameController = require('./controller/api/game.controller');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -30,6 +31,7 @@ app.use('/api/users', userController);
 app.use('/api/auth', authController);
 app.use('/api/questions', questionController);
 app.use('/api/tags', tagController);
+app.use('/api/games', gameController);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
