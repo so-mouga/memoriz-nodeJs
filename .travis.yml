@@ -1,0 +1,38 @@
+dist: trusty
+sudo: required
+
+language: node_js
+node_js:
+  - "11.0"
+
+cache:
+  directories:
+    - ./node_modules
+
+script:
+  - npm install
+
+jobs:
+  include:
+    - stage: test
+      name: "Test application"
+      script:
+        - npm run prettier:fix
+    - stage: deploy-develop
+      if: branch = deploy
+      name: "Deploy to develop HEROKU"
+      skip_cleanup: true
+      deploy:
+        provider: heroku
+        api_key:
+          secure: "ftwFJYy7OtLzK8f5Fjq2OkY8+NbV2lyrA7Oss3o4YKGvruhf+khiljSuli81q2DUl/4phnpMRqGkg7KQWa6COjGJKAa4c2VNlYxGNKYS4Ws0BqXGcTsS+ZPwmRz98tS7zDD8ByDucbrTelkxfmUIGrfy34UGBTdH1h8FdzzWA2WGVcFdB+mzZKQEQJdda9SAH0dbthMh+oD2SMbUx0q95BGdQVkxtL/lLZFYKzv07salU0AYiDolXN8aNdKTHRKaKl2K4uEapv09+uUbJfEyHT3goKEv8jIF6RGf2DG93CusGMdtm9gjDn/b34auQ3bZFV+z073IWiKdylY3OByhTCWYLaG6em99JcRV6mZ3/99qKlz1MVhAZdPdNpSxOQIof/Z5bjwMP8r1D7Iqn6tEDyRCnXK7Ye5/c5yEhxmupgXo9GKZFhbPQ4ejwnU6jZEAoFaBfuqfjj1pkEX1ZuFHgO6RT7x9ACI+zJrKuMkl8KYjZqfz2wBPK07jfI7BZySK/xZI+R4HkNc8V565znjN8o6+/OOxefYzj1kBHBCfZv6kQX1SjdFd68TEarEJcObbdiZzoDFT3Cc9QBccWNT+Dc8egt2oO0rP2oTz8g+DgwQluP/U1Li+d5dXvCCMQkIfunXRcdQXbLFIc9sTsCn48FKkBi2q9Maq4anui7ZGARE="        app: memo-riz-back-develop
+        on:
+          branch: deploy
+
+#notifications:
+#  slack:
+#    rooms:
+#      - ipssi-d19-1:3U0tNTwfovSqXR04sBm4G5HQ#memo-riz
+#      - project-memoriz:eNwxdTjBPUILq82810LqAtle#general
+#    on_success: change
+#    on_failure: always

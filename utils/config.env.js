@@ -20,6 +20,12 @@ switch (process.env.NODE_ENV) {
       process.exit(1);
     }
 }
+
+if (!fs.existsSync(env) && fs.existsSync('.env.example')) {
+  logger.debug(`${env} not found`);
+  env = '.env.example';
+}
+
 logger.debug(`Using ${env} file to supply config environment variables`);
 dotenv.config({ path: env });
 
