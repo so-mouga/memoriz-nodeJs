@@ -14,7 +14,7 @@ module.exports = {
       dateOfBirth: {
         type: Sequelize.DATE,
       },
-      profilType: {
+      profileType: {
         type: Sequelize.STRING,
       },
       email: {

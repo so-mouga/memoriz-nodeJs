@@ -1,0 +1,35 @@
+dist: trusty
+sudo: required
+
+language: node_js
+node_js:
+  - "11.0"
+
+cache:
+  directories:
+    - ./node_modules
+
+script:
+  - npm install
+
+jobs:
+  include:
+    - stage: test
+      name: "Test application"
+      script:
+        - npm run prettier:fix
+    - stage: deploy-develop
+      if: branch = develop
+      name: "Deploy to staging HEROKU"
+      skip_cleanup: true
+      before_deploy:
+        - npm install --save sequelize-cli
+      deploy:
+        provider: heroku
+        api_key:
+          secure: "AMmEA48/xXYZGvyemAm3tf3XFkXfAsAWS5b/f0NrL1jAvvAeRXdfYi5W28tfaws5o7aTMTnNPDjS0m8W6l3/gbQzH+MP2DbygXQpxM/jdP/Q79UOtxxyFL+7Lh+I5hDrQsMnYql0D7R9h601IpQDal7+JE6cy9l2GLe1gMSi0EQ7Dg9WiovYfxvc7ZJwjeOVpkA/o2yQiqr4oKzEwo7GcxJydERu/8PJPDC4Hsd8sn1xpBgRAcIb9F0E0r2SP9e4BqlkE4CbZbB9amU1OPccQwDbY7UnJpm3gJfHQSOeT/8XRfvxxW9S9hjUgQoP36zUjZTmxfge3bXMeKiIPhcAaZkFzb6i5xY4nYZkbsm+4sat3YpD4inSVDuANLyh70XuYmCL1hXU2K+5eZICrE+LmzmqVOpl6gkdGFkFprvkU2QGsUl+uwIv1U+vew/2ECqnht0qFSA87mmFPmiLV+dhK8qheg1TP2UL1aHcP3fh2PcW/CP8GIvUS6SAi8uVyHP4R9xpQ7V7O4BWKod7nBRniwBnJ4L3blFjUkoyNjRwDtJvdG8gPtHFkP56qLBx0DfV1xNjWfgR7mYZ7ay7lmalb+IdJOu8Wl1WzDJ272ibc06oYvhj9ywrfiQE/gGN4tES5Df2HSxSrj6eFTrx5awd5Nn7IvNIysX1nN8tDTTe1Vs="
+        app: memo-riz-back-dev
+        run:
+          - sequelize db:migrate
+        on:
+          branch: develop
