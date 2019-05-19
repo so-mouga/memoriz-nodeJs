@@ -25,6 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors());
 
+console.log(process.env.NODE_ENV);
 // Routes
 app.use('/', indexRouter);
 app.use('/api/users', userController);
