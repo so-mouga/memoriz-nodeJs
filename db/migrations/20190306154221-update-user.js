@@ -20,7 +20,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       }),
-      queryInterface.renameColumn('Users', 'profilType', 'profileType'),
+      // queryInterface.renameColumn('Users', 'profilType', 'profileType'),
     ]);
   },
 
@@ -43,7 +43,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       }),
-      queryInterface.renameColumn('Users', 'profileType', 'profilType'),
+      // queryInterface.renameColumn('Users', 'profileType', 'profilType'),
     ]);
   },
 };
