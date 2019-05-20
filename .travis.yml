@@ -12,12 +12,17 @@ cache:
 script:
   - npm install
 
+stages:
+  - test
+  - deploy-develop
+
 jobs:
   include:
     - stage: test
       name: "Test application"
       script:
         - npm run prettier:fix
+
     - stage: deploy-develop
       if: branch = develop
       name: "Deploy to staging HEROKU"
@@ -33,3 +38,14 @@ jobs:
           - sequelize db:migrate
         on:
           branch: develop
+
+notifications:
+  slack:
+    rooms:
+      - secure: hy1yW9YnKBSp9+GHSgPbK4qr0XQvPjE3l1/g8gkjKxTDvuOLHp9P1VyYEw28Iat+SWAYNmYV7CXHn14guBxnAMSSOdLnPPDKKeGf7CONwu0vZq1BkuQlQJsgXN0aagLXRg2ilgUekHBDy9knktN2tEspqpZgZcy41hQx8lSqlgQdgz1OEth8DJEg8hTpj8Dhmyf6xQyY6fjz9YHJxXm7Y+aAlxBG+NySAE0idHjUu7vZq9XOZW9ZyZDtB8MicRChOjJT0iqM65Wfuy/5waHF76MvByUo7J+FZZsGAtpIGsTJMwtGkhh8rCqfcELSeKXUNjHw2MmWSOqQ+H1ZbtK3GmD9Y51JZs1bafpqqWCZQT0Y/n/A1l5Pjw6WpVmBQ/sDdDfgrrmVu9+u4Z3BZva68U88PnvZqxrOy/2hBBV85a+6Znz1299xSNofRlkJCawuPnLQRlFN9slLbtnkCbaQ+tMIRm0KgHvaSnyOGMB9/yMq+oP8KY4PWrtrIEDbJ8Jn+sss5ChGL8LvSaRYoQ2r9iT/t9lZP5e2vNxeBPib7QQ6YCncol6Qs2Dw9KEXAswnzU4i9pL04SQ+/YNWdFzdZpEjTmQNINLGWTODBO6w1kg/K0TiJFiBoUlIjDYJ1K89GWykwu+9ephnfMNXaKzIy/w8oE1jMmNan7dVEBUwk0U=
+    on_success: change
+    on_failure: always
+    template:
+      - "Repo `%{repository_slug}` *%{result}* build (<%{build_url}|#%{build_number}>) for commit (<%{compare_url}|%{commit}>) on branch `%{branch}`."
+      - "Execution time: *%{duration}*"
+      - "Message: %{message}"
