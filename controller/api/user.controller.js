@@ -4,6 +4,8 @@ const models = require('../../db/models');
 const HttpStatus = require('http-status-codes');
 const Token = require('../../utils/token/token');
 const Password = require('../../utils/password/password');
+const UserNotifier = require('../../utils/mailer/notifier/user-notifier');
+const UserManager = require('../../manager/user.manager');
 
 /* GET users. */
 router.get('/', Token.verifyToken, function(req, res) {
@@ -31,6 +33,20 @@ router.post('/', function(req, res) {
   req.body.password = Password.generateHash(req.body.password);
   models.User.create(req.body)
     .then(user => {
+      //Token for verify user in mail
+      const urlToken = Token.createToken(
+        {
+          id: user.id,
+          userName: user.userName,
+          email: user.email,
+        },
+        '10d',
+      );
+
+      //Send a mail to user for validate account
+      if (UserNotifier.sendMailValidationUser(user, urlToken) === 'err') {
+        return res.status(HttpStatus.BAD_REQUEST);
+      }
       return res.status(HttpStatus.CREATED).send(user);
     })
     .catch(error => {
@@ -57,6 +73,30 @@ router.put('/:id', Token.verifyToken, function(req, res) {
       .catch(e => {
         return res.status(HttpStatus.NOT_ACCEPTABLE).send(e.message);
       });
+  });
+});
+
+/* Valid user */
+router.get('/verify/account', function(req, res) {
+  if (Token.tokenIsValid(req.query.token) === false) {
+    return res.render('user/token-not-validated');
+  }
+
+  const user = Token.tokenIsValid(req.query.token).data;
+
+  models.User.update(
+    {
+      isValidated: true,
+    },
+    {
+      returning: true,
+      where: { id: user.id },
+    },
+  );
+
+  return res.render('user/account-validated', {
+    name: user.userName,
+    urlConnexion: `${process.env.CLIENT_URL}/log-in`,
   });
 });
 

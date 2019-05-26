@@ -4,16 +4,16 @@ const fs = require('fs');
 const publicKey = fs.readFileSync('./utils/keys/jwtRS256.key.pub');
 const privateKey = fs.readFileSync('./utils/keys/jwtRS256.key');
 
-exports.createToken = details => {
-  if (typeof details !== 'object') {
-    details = {};
+exports.createToken = (payload, expiresIn = '30d') => {
+  if (typeof payload !== 'object') {
+    payload = {};
   }
-  if (details || typeof details == 'object') {
+  if (payload || typeof payload == 'object') {
     const options = {
-      expiresIn: '30d', // 30 days validity
+      expiresIn: expiresIn,
       algorithm: 'RS256',
     };
-    return jwt.sign({ data: details }, privateKey, options);
+    return jwt.sign({ data: payload }, privateKey, options);
   }
   return null;
 };
@@ -30,6 +30,15 @@ exports.verifyToken = (req, res, next) => {
     }
     req.user = decodedToken;
     next();
+  });
+};
+
+exports.tokenIsValid = token => {
+  return jwt.verify(token, publicKey, function(err, decodedToken) {
+    if (err || !decodedToken) {
+      return false;
+    }
+    return decodedToken;
   });
 };
 
