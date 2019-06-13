@@ -25,6 +25,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors());
 
+// Socket.io
+const socket_io = require('socket.io');
+const io = socket_io();
+app.io = io;
+require('./controller/socket/socket.controller')(io);
+
 // Routes
 app.use('/', indexRouter);
 app.use('/api/users', userController);
