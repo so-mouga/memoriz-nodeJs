@@ -4,6 +4,25 @@ const Question = require('./../db/models').Question;
 const Tag = require('./../db/models').Tag;
 const Sequelize = require('./../db/models').sequelize;
 
+module.exports.getGames = criteria => {
+  return Game.findAll({
+    where: criteria,
+    include: [
+      {
+        model: User,
+        as: 'user',
+        attributes: ['id', 'userName'],
+      },
+      {
+        model: Question,
+        as: 'questions',
+        through: { attributes: [] },
+      },
+    ],
+    order: [['id', 'DESC']],
+  });
+};
+
 /**
  * Get Game by id with the relations
  *

@@ -8,8 +8,14 @@ const Question = require('../../db/models').Question;
 const Tag = require('../../db/models').Tag;
 const Sequelize = require('../../db/models').sequelize;
 const Op = Sequelize.Op;
+const GameManager = require('../../manager/game.manager');
 
 router.all('*', Token.verifyToken);
+
+/* GET get game. */
+router.get('/', function(req, res) {
+  return GameManager.getGames(req.query).then(games => res.status(HttpStatus.OK).send(games));
+});
 
 /* POST create game. */
 router.post('/', function(req, res) {
