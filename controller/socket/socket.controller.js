@@ -6,7 +6,8 @@ const rooms = new Map();
 const ROOM_USER_CREATE = 'room-user-create';
 const ROOM_USER_DELETE = 'room-user-delete';
 const ROOM_PLAYER_JOIN = 'room-player-join';
-const ROOM_NOTIFY_USER_NEW_PLAYER_JOIN = 'room-notify-user-new-player-join';
+const ROOM_PLAYERS_STATUS = 'room-players-status';
+const ROOM_USER_REMOVE_PLAYER = 'room-user-remove-player';
 const ROOM_NOTIFY_PLAYER_ROOM_CLOSED = 'room-user-leave-notify-players';
 const ROOM_NOTIFY_USER_THAT_PLAYER_LEFT = 'room-player-leave-notify-user';
 
@@ -24,16 +25,29 @@ const io = function(io) {
     socket.on(ROOM_USER_CREATE, message => {
       GameManager.getGameById(message.gameId).then(game => {
         if (!game) {
-          socket.emit(ROOM_USER_CREATE, generateSocketResponse(ROOM_USER_CREATE, false, null, 'game not found'));
+          socket.emit(
+            ROOM_USER_CREATE,
+            generateSocketResponse(
+              ROOM_USER_CREATE,
+              false,
+              null,
+              'Hmm ... nous ne semblons pas pouvoir trouver ce quizz.',
+            ),
+          );
         }
 
+        const player = {
+          socketId: socket.id,
+          isAdmin: true,
+          ...message.user,
+        };
         const roomId = generateRoomId();
         rooms.set(roomId, {
           roomId: roomId,
           game: game,
           userId: message.userId,
           socketId: socket.id,
-          players: [],
+          players: [player],
         });
 
         socket.emit(ROOM_USER_CREATE, generateSocketResponse(ROOM_USER_CREATE, true, getRoomById(roomId)));
@@ -44,7 +58,7 @@ const io = function(io) {
      * delete room
      */
     socket.on(ROOM_USER_DELETE, message => {
-      const room = getRoomById(parseInt(message.roomId));
+      const room = getRoomById(message.roomId);
       // notify players
       room.players.forEach(player => {
         io.to(player.socketId).emit(
@@ -59,23 +73,27 @@ const io = function(io) {
      * player join room
      */
     socket.on(ROOM_PLAYER_JOIN, message => {
-      const room = getRoomById(parseInt(message.roomId));
+      const room = getRoomById(message.roomId);
 
       if (room) {
         const user = message.user;
         // todo uncomment this to restrict one same username by room
-        // let player = room.players.find(player => player.userName === user.userName);
-        // if (player) {
-        //   socket.emit(ROOM_PLAYER_JOIN, generateSocketResponse(ROOM_PLAYER_JOIN, false, {}, 'Player already existing'));
-        // } else {
-        user.socketId = socket.id;
-        room.players.push(user);
-        socket.emit(ROOM_PLAYER_JOIN, generateSocketResponse(ROOM_PLAYER_JOIN, true, room, 'room found'));
-        io.to(room.socketId).emit(
-          ROOM_NOTIFY_USER_NEW_PLAYER_JOIN,
-          generateSocketResponse(ROOM_NOTIFY_USER_NEW_PLAYER_JOIN, true, user, 'new player'),
-        );
-        // }
+        let player = room.players.find(player => player.userName === user.userName);
+        if (player) {
+          socket.emit(ROOM_PLAYER_JOIN, generateSocketResponse(ROOM_PLAYER_JOIN, false, {}, 'Player already existing'));
+        } else {
+          user.socketId = socket.id;
+          user.isAdmin = false;
+          room.players.push(user);
+          socket.emit(ROOM_PLAYER_JOIN, generateSocketResponse(ROOM_PLAYER_JOIN, true, room, 'room found'));
+
+          room.players.forEach(player => {
+            io.to(player.socketId).emit(
+              ROOM_PLAYERS_STATUS,
+              generateSocketResponse(ROOM_PLAYERS_STATUS, true, room.players, 'new player'),
+            );
+          });
+        }
       } else {
         // room not found
         socket.emit(
@@ -86,13 +104,45 @@ const io = function(io) {
     });
 
     /**
+     * Remove player and notify him
+     */
+    socket.on(ROOM_USER_REMOVE_PLAYER, message => {
+      const room = getRoomById(message.roomId);
+      if (room) {
+        const player = room.players.find(player => player.id === message.playerId);
+        if (player) {
+          room.players = room.players.filter(player => player.id !== message.playerId);
+          io.to(player.socketId).emit(
+            ROOM_NOTIFY_PLAYER_ROOM_CLOSED,
+            generateSocketResponse(
+              ROOM_NOTIFY_PLAYER_ROOM_CLOSED,
+              true,
+              null,
+              'On ta fait sortir de la salle, tu sera rediriger sur la page précédente',
+            ),
+          );
+          room.players.forEach(player => {
+            io.to(player.socketId).emit(
+              ROOM_PLAYERS_STATUS,
+              generateSocketResponse(ROOM_PLAYERS_STATUS, true, room.players, 'new player'),
+            );
+          });
+        }
+      }
+    });
+
+    /**
      * notify players that user close room
      */
     socket.on('room-user-leave', roomID => {
-      const room = getRoomById(parseInt(roomID));
+      const room = getRoomById(roomID);
       room.players.forEach(player => {
-        io.to(player.socketId).emit('room-user-leave-notify-players', 'room has deleted');
-        console.log(player.socketId);
+        generateSocketResponse(
+          ROOM_NOTIFY_PLAYER_ROOM_CLOSED,
+          true,
+          null,
+          "La salle a été fermée par l'utilisateur, tu sera rediriger sur la page précédente",
+        );
       });
     });
 
@@ -100,13 +150,15 @@ const io = function(io) {
      * notify user that player leave room
      */
     socket.on(ROOM_NOTIFY_USER_THAT_PLAYER_LEFT, data => {
-      const room = getRoomById(parseInt(data.roomId));
+      const room = getRoomById(data.roomId);
       if (room) {
-        room.players = room.players.filter(player => player.userName !== data.user.userName);
-        io.to(room.socketId).emit(
-          ROOM_NOTIFY_USER_THAT_PLAYER_LEFT,
-          generateSocketResponse('notify-user-player-leave', true, data.user, 'user has left'),
-        );
+        room.players = room.players.filter(player => player.id !== data.user.id);
+        room.players.forEach(player => {
+          io.to(player.socketId).emit(
+            ROOM_PLAYERS_STATUS,
+            generateSocketResponse(ROOM_PLAYERS_STATUS, true, room.players, 'new player'),
+          );
+        });
       }
     });
   });
@@ -124,7 +176,7 @@ function generateRoomId() {
 }
 
 function getRoomById(id) {
-  return rooms.get(id);
+  return rooms.get(parseInt(id));
 }
 
 function generateSocketResponse(action, isSuccess, data, message = '') {
