@@ -78,7 +78,7 @@ const io = function(io) {
       if (room) {
         const user = message.user;
         // todo uncomment this to restrict one same username by room
-        let player = room.players.find(player => player.userName === user.userName);
+        let player = room.players.find(player => player.username === user.username);
         if (player) {
           socket.emit(ROOM_PLAYER_JOIN, generateSocketResponse(ROOM_PLAYER_JOIN, false, {}, 'Player already existing'));
         } else {

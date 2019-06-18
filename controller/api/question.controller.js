@@ -19,7 +19,7 @@ router.get('/', function(req, res) {
       {
         model: User,
         as: 'user',
-        attributes: ['id', 'userName'],
+        attributes: ['id', 'username'],
       },
       {
         model: Tag,
@@ -181,7 +181,7 @@ function getQuestionById(id) {
       {
         model: User,
         as: 'user',
-        attributes: ['id', 'userName'],
+        attributes: ['id', 'username'],
       },
       {
         model: Tag,

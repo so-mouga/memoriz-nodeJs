@@ -11,7 +11,7 @@ module.exports.getGames = criteria => {
       {
         model: User,
         as: 'user',
-        attributes: ['id', 'userName'],
+        attributes: ['id', 'username'],
       },
       {
         model: Question,
@@ -39,7 +39,7 @@ module.exports.getGameById = id => {
       {
         model: User,
         as: 'user',
-        attributes: ['id', 'userName'],
+        attributes: ['id', 'username'],
       },
       {
         model: Question,
