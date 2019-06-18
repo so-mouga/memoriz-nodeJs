@@ -65,7 +65,7 @@ function getGameById(id) {
       {
         model: User,
         as: 'user',
-        attributes: ['id', 'userName'],
+        attributes: ['id', 'username'],
       },
       {
         model: Question,

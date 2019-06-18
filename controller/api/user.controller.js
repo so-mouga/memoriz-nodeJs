@@ -37,7 +37,7 @@ router.post('/', function(req, res) {
       const urlToken = Token.createToken(
         {
           id: user.id,
-          userName: user.userName,
+          username: user.username,
           email: user.email,
         },
         '10d',
@@ -95,7 +95,7 @@ router.get('/verify/account', function(req, res) {
   );
 
   return res.render('user/account-validated', {
-    name: user.userName,
+    name: user.username,
     urlConnexion: `${process.env.CLIENT_URL}/log-in`,
   });
 });

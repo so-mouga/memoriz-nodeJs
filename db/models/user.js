@@ -1,11 +1,16 @@
 'use strict';
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     'User',
     {
-      userName: {
+      username: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: {
+          args: true,
+          msg: 'Le pseudo est déjà utilisée',
+        },
       },
       dateOfBirth: DataTypes.DATE,
       profileType: {

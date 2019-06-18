@@ -18,7 +18,7 @@ router.post('/login', function(req, res) {
     return res.status(HttpStatus.OK).json({
       success: true,
       message: 'Authentication successful!',
-      token: Token.createToken({ id: user.id, userName: user.userName }),
+      token: Token.createToken({ id: user.id, username: user.username }),
     });
   });
 });
