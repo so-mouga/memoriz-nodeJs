@@ -152,7 +152,7 @@ const io = function(io) {
     socket.on(ROOM_NOTIFY_USER_THAT_PLAYER_LEFT, data => {
       const room = getRoomById(data.roomId);
       if (room) {
-        room.players = room.players.filter(player => player.id !== data.user.id);
+        room.players = room.players.filter(player => player.username !== data.user.username);
         room.players.forEach(player => {
           io.to(player.socketId).emit(
             ROOM_PLAYERS_STATUS,
