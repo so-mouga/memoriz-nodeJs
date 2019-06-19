@@ -75,6 +75,7 @@ endif
 app-install:
 	docker-compose exec web npm install
 	make app-create-database
+	make app-db-migrate
 	make init-hooks
 
 ## to run app
