@@ -3,6 +3,7 @@ const router = app.Router();
 const GameManager = require('../../manager/game.manager');
 const rooms = new Map();
 
+const ROOM_FIND = 'room-find';
 const ROOM_USER_CREATE = 'room-user-create';
 const ROOM_USER_DELETE = 'room-user-delete';
 const ROOM_PLAYER_JOIN = 'room-player-join';
@@ -55,6 +56,17 @@ const io = function(io) {
     });
 
     /**
+     * find room
+     */
+    socket.on(ROOM_FIND, roomId => {
+      const room = getRoomById(roomId);
+      socket.emit(
+        ROOM_FIND,
+        generateSocketResponse(ROOM_FIND, !!room, room, room ? '' : 'aucune salle ne correspond à ce code'),
+      );
+    });
+
+    /**
      * delete room
      */
     socket.on(ROOM_USER_DELETE, message => {
@@ -80,7 +92,10 @@ const io = function(io) {
         // todo uncomment this to restrict one same username by room
         let player = room.players.find(player => player.username === user.username);
         if (player) {
-          socket.emit(ROOM_PLAYER_JOIN, generateSocketResponse(ROOM_PLAYER_JOIN, false, {}, 'Player already existing'));
+          socket.emit(
+            ROOM_PLAYER_JOIN,
+            generateSocketResponse(ROOM_PLAYER_JOIN, false, {}, 'Le pseudo est déjà utilisé'),
+          );
         } else {
           user.socketId = socket.id;
           user.isAdmin = false;
@@ -129,21 +144,6 @@ const io = function(io) {
           });
         }
       }
-    });
-
-    /**
-     * notify players that user close room
-     */
-    socket.on('room-user-leave', roomID => {
-      const room = getRoomById(roomID);
-      room.players.forEach(player => {
-        generateSocketResponse(
-          ROOM_NOTIFY_PLAYER_ROOM_CLOSED,
-          true,
-          null,
-          "La salle a été fermée par l'utilisateur, tu sera rediriger sur la page précédente",
-        );
-      });
     });
 
     /**
