@@ -34,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {},
   );
+  Question.GAME_TYPE_QUIZZ = 'quizz';
   Question.associate = function(models) {
     Question.belongsTo(models.User, {
       foreignKey: 'userId',

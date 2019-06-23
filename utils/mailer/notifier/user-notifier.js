@@ -5,8 +5,6 @@ exports.sendMailValidationUser = (user, token) => {
     process.env.ADMIN_MAIL,
     user.email,
     'Bienvenue sur Memoriz',
-    `Bienvenue ${user.username} sur la plateforme Memoriz lien de validation : ${
-      process.env.HOST_URL
-    }/api/users/verify/account?token=${token}`,
+    `Bienvenue ${user.username} sur la plateforme Memoriz lien de validation : ${process.env.HOST_URL}/api/users/verify/account?token=${token}`,
   );
 };

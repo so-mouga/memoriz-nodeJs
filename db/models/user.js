@@ -38,6 +38,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     {},
   );
+  User.PROFILE_TYPE_TEACHER = 'teacher';
+  User.PROFILE_TYPE_STUDENT = 'student';
+  User.PROFILE_TYPE_OTHER = 'other';
+
   User.associate = function(models) {
     // associations can be defined here
     User.hasMany(models.Question, {

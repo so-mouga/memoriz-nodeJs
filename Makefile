@@ -121,3 +121,19 @@ app-cs-check:
 ## to fix files that need to be fixed
 app-cs-fix:
 	$(docker_exec_web) npm run prettier:fix
+
+## to load data fixtures
+app-fixtures-load:
+	$(docker_exec_web) node_modules/.bin/sequelize  db:seed:all
+
+## to clear data fixtures
+app-fixture-clear:
+	$(docker_exec_web) node_modules/.bin/sequelize db:seed:undo:all
+
+## to reset data fixtures
+app-fixture-reset:
+	make app-fixture-clear app-fixtures-load
+
+## to empty database and install fixtures
+app-data-reset:
+	make app-db-unmigrate app-db-migrate app-fixture-clear app-fixtures-load
