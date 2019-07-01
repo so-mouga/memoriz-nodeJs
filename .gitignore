@@ -52,3 +52,7 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# media upload
+public/uploads/*
+!public/uploads/.gitkeep

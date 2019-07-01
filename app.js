@@ -12,6 +12,7 @@ const authController = require('./controller/api/auth.controller');
 const questionController = require('./controller/api/question.controller');
 const tagController = require('./controller/api/tag.controller');
 const gameController = require('./controller/api/game.controller');
+const mediaController = require('./controller/api/media.controller');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -38,6 +39,7 @@ app.use('/api/auth', authController);
 app.use('/api/questions', questionController);
 app.use('/api/tags', tagController);
 app.use('/api/games', gameController);
+app.use('/api/media', mediaController);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
