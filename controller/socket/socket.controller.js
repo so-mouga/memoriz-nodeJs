@@ -11,6 +11,8 @@ const ROOM_PLAYERS_STATUS = 'room-players-status';
 const ROOM_USER_REMOVE_PLAYER = 'room-user-remove-player';
 const ROOM_NOTIFY_PLAYER_ROOM_CLOSED = 'room-user-leave-notify-players';
 const ROOM_NOTIFY_USER_THAT_PLAYER_LEFT = 'room-player-leave-notify-user';
+const ROOM_PLAY_START = 'room-play-start';
+const ROOM_PLAY_GET_QUESTION = 'room-play-get-question';
 
 const io = function(io) {
   io.on('connection', socket => {
@@ -18,6 +20,34 @@ const io = function(io) {
 
     socket.on('disconnect', () => {
       console.log(`Socket ${socket.id} disconnected.`);
+    });
+
+    socket.on(ROOM_PLAY_START, roomId => {
+      const room = getRoomById(roomId);
+
+      if (room) {
+        room.players.forEach(player => {
+          io.to(player.socketId).emit(ROOM_PLAY_START, generateSocketResponse(ROOM_PLAY_START, true, null, null));
+        });
+      }
+    });
+
+    socket.on(ROOM_PLAY_GET_QUESTION, message => {
+      const room = getRoomById(message.roomId);
+
+      if (room) {
+        if (message.questionId === null) {
+          const question = room.game.dataValues.questions.shift();
+          room.players.forEach(player => {
+            io.to(player.socketId).emit(
+              ROOM_PLAY_GET_QUESTION,
+              generateSocketResponse(ROOM_PLAY_GET_QUESTION, true, question, ''),
+            );
+          });
+        } else {
+          //todo send next question
+        }
+      }
     });
 
     /**
