@@ -13,6 +13,8 @@ const ROOM_NOTIFY_PLAYER_ROOM_CLOSED = 'room-user-leave-notify-players';
 const ROOM_NOTIFY_USER_THAT_PLAYER_LEFT = 'room-player-leave-notify-user';
 const ROOM_PLAY_START = 'room-play-start';
 const ROOM_PLAY_GET_QUESTION = 'room-play-get-question';
+const ROOM_PLAY_GET_SCORE_QUIZZ = 'room-play-get-score-quizz';
+const ROOM_PLAY_SEND_SCORE = 'room-play-send-score';
 
 const io = function(io) {
   io.on('connection', socket => {
@@ -32,12 +34,46 @@ const io = function(io) {
       }
     });
 
-    socket.on(ROOM_PLAY_GET_QUESTION, message => {
+    socket.on(ROOM_PLAY_GET_SCORE_QUIZZ, message => {
+      const room = getRoomById(message.roomId);
+      let answers = [];
+
+      if (room) {
+        const player = room.players.find(player => player.username === message.username);
+        room.game.questions.forEach(question => {
+          answers.push({ answerPlayers: question.answerPlayers, question });
+        });
+
+        io.to(player.socketId).emit(
+          ROOM_PLAY_GET_SCORE_QUIZZ,
+          generateSocketResponse(ROOM_PLAY_GET_SCORE_QUIZZ, true, answers, null),
+        );
+      }
+    });
+
+    socket.on(ROOM_PLAY_SEND_SCORE, message => {
       const room = getRoomById(message.roomId);
 
       if (room) {
-        if (message.questionId === null) {
-          const question = room.game.dataValues.questions.shift();
+        room.game.questions.map(question => {
+          if (question.id === message.questionId) {
+            question.answerPlayers.push({
+              username: message.username,
+              answer: message.answer,
+              isCorrect: message.isCorrect,
+            });
+          }
+        });
+      }
+    });
+
+    socket.on(ROOM_PLAY_GET_QUESTION, message => {
+      const room = getRoomById(message.roomId);
+      if (room) {
+        const question = room.game.dataValues.questions[room.indexQuestion];
+        room.indexQuestion++;
+
+        if (question) {
           room.players.forEach(player => {
             io.to(player.socketId).emit(
               ROOM_PLAY_GET_QUESTION,
@@ -45,7 +81,12 @@ const io = function(io) {
             );
           });
         } else {
-          //todo send next question
+          room.players.forEach(player => {
+            io.to(player.socketId).emit(
+              ROOM_PLAY_GET_QUESTION,
+              generateSocketResponse(ROOM_PLAY_GET_QUESTION, false, {}, 'quizz is finished'),
+            );
+          });
         }
       }
     });
@@ -72,13 +113,18 @@ const io = function(io) {
           isAdmin: true,
           ...message.user,
         };
+
         const roomId = generateRoomId();
+        game.questions.forEach(question => {
+          question.answerPlayers = [];
+        });
         rooms.set(roomId, {
           roomId: roomId,
           game: game,
           userId: message.userId,
           socketId: socket.id,
           players: [player],
+          indexQuestion: 0,
         });
 
         socket.emit(ROOM_USER_CREATE, generateSocketResponse(ROOM_USER_CREATE, true, getRoomById(roomId)));
@@ -200,8 +246,8 @@ function deleteRoomById(id) {
 }
 
 function generateRoomId() {
-  const min = 100;
-  const max = 1000000;
+  const min = 10;
+  const max = 9999;
   return Math.floor(Math.random() * (+max - +min)) + +min;
 }
 
