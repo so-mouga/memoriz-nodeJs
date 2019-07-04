@@ -10,7 +10,7 @@ router.post('/upload', upload.single('media'), function(req, res, next) {
   if (!req.file) {
     return res.status(HttpStatus.NO_CONTENT).send('No file receive');
   } else {
-    return res.status(HttpStatus.CREATED).send(`${process.env.HOST_URL}/uploads/${req.file.filename}`);
+    return res.status(HttpStatus.CREATED).send({ media: `${process.env.HOST_URL}/uploads/${req.file.filename}` });
   }
 });
 
