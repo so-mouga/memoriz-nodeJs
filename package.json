@@ -23,7 +23,7 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "~1.9.0",
     "multer": "^1.4.1",
-    "mysql2": "^1.6.5",
+    "mysql2": "^2.0.2",
     "nodemailer": "^6.2.1",
     "pg": "^7.11.0",
     "random-questions": "^1.0.1",
