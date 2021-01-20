@@ -29,7 +29,7 @@
     "random-questions": "^1.0.1",
     "sequelize": "^5.9.0",
     "sequelize-cli": "^5.5.0",
-    "socket.io": "^2.2.0",
+    "socket.io": "^2.4.0",
     "twig": "~1.13.3",
     "uuidv4": "^4.0.0",
     "winston": "^3.2.1"
